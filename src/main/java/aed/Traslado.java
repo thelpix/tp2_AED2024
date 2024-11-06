@@ -15,4 +15,16 @@ public class Traslado {
         this.gananciaNeta = gananciaNeta;
         this.timestamp = timestamp;
     }
+    //devolver destino
+    public int destino() {
+        return destino;
+    }
+    //devolver origen
+    public int origen(){
+        return origen;
+    }
+    //devolver gananciaNeta
+    public int gananciaNeta(){
+        return gananciaNeta;
+    }
 }
