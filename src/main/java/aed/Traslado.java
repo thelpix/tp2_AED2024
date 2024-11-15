@@ -7,6 +7,9 @@ public class Traslado {
     int destino;
     int gananciaNeta;
     int timestamp;
+    //handles
+    int posicionHeapAntiguedad;
+    int posicionHeapRedituabilidad; 
 
     public Traslado(int id, int origen, int destino, int gananciaNeta, int timestamp){
         this.id = id;
@@ -14,17 +17,5 @@ public class Traslado {
         this.destino = destino;
         this.gananciaNeta = gananciaNeta;
         this.timestamp = timestamp;
-    }
-    //devolver destino
-    public int destino() {
-        return destino;
-    }
-    //devolver origen
-    public int origen(){
-        return origen;
-    }
-    //devolver gananciaNeta
-    public int gananciaNeta(){
-        return gananciaNeta;
     }
 }
