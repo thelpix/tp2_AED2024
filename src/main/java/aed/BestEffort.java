@@ -9,11 +9,9 @@ public class BestEffort {
     private ArrayList<Integer> ciudadesMayorPerdida; //x2
     private int MayorGanancia; //variable que comparará la ciudad mas rentable
     private int MayorPerdida; //lo mismo pero en perdidas
-
-    //habria que haber dos clases comparadoras para los heaps, uno por el timestamp 
-    //y otro por la gananciaNeta + dif de timestamp para desempatar
-    
-    //asumo que en la clase InfoTraslados//Traslado, hay dos atributos tipo int que son las posiciones en sus respectivos heaps (handles)
+    private ComparatorAntiguedad comparatorAntiguedad;
+    private ComparatorRedituabilidad comparatorRedituabilidad;
+    //usar un array y arraylist para superavit?
     
     public BestEffort(int cantCiudades, Traslado[] traslados){
         int[] ganancias = new int[cantCiudades]; //O(|C|),
@@ -136,6 +134,7 @@ public class BestEffort {
     
     public int ciudadConMayorSuperavit(){
         //aca tendria que ver, pero podria como dije arriba capaz usar otro array y variables auxiliares para sacar el mayor superAvit?
+        return 0;
     }
     
     public ArrayList<Integer> ciudadesConMayorGanancia(){
