@@ -9,8 +9,6 @@ public class BestEffort {
     private ArrayList<Integer> ciudadesMayorPerdida; //x2
     private int MayorGanancia; //variable que comparará la ciudad mas rentable
     private int MayorPerdida; //lo mismo pero en perdidas
-    private ComparatorAntiguedad comparatorAntiguedad;
-    private ComparatorRedituabilidad comparatorRedituabilidad;
     private int totalTrasladosDespachados;
     private int gananciaPromedioPorTraslado;
     //usar un array y arraylist para superavit?
@@ -27,9 +25,9 @@ public class BestEffort {
         }
         //esto seria O(|C| + |C|) = O(|C|)
         
-        //heap heapRedituabilidad = new heap<Traslado>(traslados, comparatorRedituabilidad); //O(|T|) asumiendo que use Algoritmo de Floyd, Max-Heap
-        //heap heapAntiguedad = new heap<Traslado>(traslados, comparatorAntiguedad); //O(|T|), es como un Min-Heap
-        //heap heapSuperavits = new heap<Ciudad>(ciudades, comparatorInteger); //O(|T|)
+        //Heap<Traslado, ?> heapRedituabilidad = new heap<Traslado>(traslados, 2); //O(|T|) asumiendo que use Algoritmo de Floyd, Max-Heap
+        //heap heapAntiguedad = new heap<Traslado>(traslados, 1); //O(|T|), es como un Min-Heap
+        //heap heapSuperavits = new heap<Ciudad>(ciudades, 0); //O(|T|)
 
         ///¿Cómo logro crear Superavits en un heap, pudiendo actualizar 
         

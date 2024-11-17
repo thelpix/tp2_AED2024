@@ -8,4 +8,8 @@ public class Ciudad {
     public Ciudad(int id){
         this.id = id;
     }
+
+    public int superavit(){
+        return this.superavit;
+    }
 }
