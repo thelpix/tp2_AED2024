@@ -9,13 +9,19 @@ public class BestEffort {
     private ArrayList<Integer> ciudadesMayorPerdida; //x2
     private int MayorGanancia; //variable que comparará la ciudad mas rentable
     private int MayorPerdida; //lo mismo pero en perdidas
+    private int superavitOrigen;
+    private int superavitDestino;
     private ComparatorAntiguedad comparatorAntiguedad;
     private ComparatorRedituabilidad comparatorRedituabilidad;
+    private int totalTrasladosDespachados;
+    private int gananciaPromedioPorTraslado;
     //usar un array y arraylist para superavit?
     
     public BestEffort(int cantCiudades, Traslado[] traslados){
         int[] ganancias = new int[cantCiudades]; //O(|C|),
         int[] perdidas = new int[cantCiudades]; //O(|C|), arrays de tamaño fijos
+        int[] promedios = new int[cantCiudades]; //O(|C|)
+        totalTrasladosDespachados = 0;
         
         //esto seria O(|C| + |C|) = O(|C|)
         
@@ -51,31 +57,41 @@ public class BestEffort {
             
             //Parte de Ciudades (DIFICIL), podria modularizarlo en otra funcion privada
             
-            perdidas[traslado.origen] =+ traslado.gananciaNeta; //O(1) no?
-            ganacia[traslado.destino] =+ traslado.gananciaNeta; //O(1) no?
+            perdidas[traslado.destino] =+ traslado.gananciaNeta; //O(1) no?
+            promedio[traslado.origen] =- perdidas[traslado.destino];
+
+            ganancia[traslado.origen] =+ traslado.gananciaNeta; //O(1) no?
+            promedio[traslado.destino] =+ perdidas[traslado.origen];
+            ganaciaPromedioPorTraslado =+ traslado.gananciaNeta;
             //usare dos variables temporales para comparar
-            int perdidaAux = perdidas[traslados.origen]; //O(1)
-            int gananciaAux = ganancia[traslado.destino]; //O(1)
+            int perdidaAux = perdidas[traslados.destino]; //O(1)
+            int gananciaAux = ganancia[traslado.origen]; //O(1)
             
             if(perdidaAux > MayorPerdida){ //creo que el if es O(1)
                 MayorPerdida = perdidaAux; //O(1)
-                ciudadesMayorPerdida = [traslado.origen]; //O(1)
+                ciudadesMayorPerdida = [traslado.destino]; //O(1)
             }
             else if(perdidaAux == MayorPerdida){ //creo que sigue siendo O(1) ???
-                ciudadesMayorPerdida.add(traslado.origen);
+                ciudadesMayorPerdida.add(traslado.destino);
                 //O(1) amortizado, en https://stackoverflow.com/questions/45220908/why-arraylist-add-and-addint-index-e-complexity-is-amortized-constant-time
                 //lo explican el por qué (y en el TP tambien)
             }
             
             if(gananciaAux > MayorGanancia){ //creo que el if es O(1)
                 MayorGanancia = gananciaAux; //O(1)
-                ciudadesMayorGanancia = [traslado.destino]; //O(1)
+                ciudadesMayorGanancia = [traslado.origen]; //O(1)
             }
             else if(gananciaAux == MayorGanancia){ //creo que sigue siendo O(1) ???
-                ciudadesMayorGanancia.add(traslado.destino); //O(1) amortizado
+                ciudadesMayorGanancia.add(traslado.origen); //O(1) amortizado
             }
             */
-            //para el superAvit podria usar algun otro array y otra variable me imagino, y seguiria siendo O(1)
+
+            //Parte SuperAvit
+            /*
+            int superavitAux = promedio[]
+            */
+
+            gananciaPromedioPorTraslado++;
         }
             //como hay muchos O(1), en complejidad asintotica no se cuentan por constantes
             //complejidad final = O(n(log|T| + log|T|)) -> O(n(log|T|))
@@ -99,29 +115,29 @@ public class BestEffort {
                 //pasaria de O(|T|log(|T|)) -> O(log(|T|))
                 
                 //Parte de Ciudades (DIFICIL), podria modularizarlo en otra funcion privada
-                
-                perdidas[traslado.origen] =+ traslado.gananciaNeta; //O(1) no?
-                ganacia[traslado.destino] =+ traslado.gananciaNeta; //O(1) no?
+
+                perdidas[traslado.destino-1] =+ traslado.gananciaNeta; //O(1) no?
+                ganacia[traslado.origen-1] =+ traslado.gananciaNeta; //O(1) no?
                 //usare dos variables temporales para comparar
-                int perdidaAux = perdidas[traslados.origen]; //O(1)
-                int gananciaAux = ganancia[traslado.destino]; //O(1)
+                int perdidaAux = perdidas[traslado.destino]; //O(1)
+                int gananciaAux = ganancia[traslado.origen]; //O(1)
                 
                 if(perdidaAux > MayorPerdida){ //creo que el if es O(1)
                     MayorPerdida = perdidaAux; //O(1)
-                    ciudadesMayorPerdida = [traslado.origen]; //O(1)
+                    ciudadesMayorPerdida = [traslado.destino]; //O(1)
                 }
                 else if(perdidaAux == MayorPerdida){ //creo que sigue siendo O(1) ???
-                    ciudadesMayorPerdida.add(traslado.origen);
+                    ciudadesMayorPerdida.add(traslado.destino);
                     //O(1) amortizado, en https://stackoverflow.com/questions/45220908/why-arraylist-add-and-addint-index-e-complexity-is-amortized-constant-time
                     //lo explican el por qué (y en el TP tambien)
                 }
                 
                 if(gananciaAux > MayorGanancia){ //creo que el if es O(1)
                     MayorGanancia = gananciaAux; //O(1)
-                    ciudadesMayorGanancia = [traslado.destino]; //O(1)
+                    ciudadesMayorGanancia = [traslado.origen]; //O(1)
                 }
                 else if(gananciaAux == MayorGanancia){ //creo que sigue siendo O(1) ???
-                    ciudadesMayorGanancia.add(traslado.destino); //O(1) amortizado
+                    ciudadesMayorGanancia.add(traslado.origen); //O(1) amortizado
                 }
                 */
                 //para el superAvit podria usar algun otro array y otra variable me imagino, y seguiria siendo O(1)
@@ -146,7 +162,6 @@ public class BestEffort {
     }
     
     public int gananciaPromedioPorTraslado(){
-        //me falta este, supongo que tengo que usar mas variables y aprovechar en hacerlo en los despachar, de forma O(1) ah
-        return 0;
+        return (gananciaPromedioPorTraslado / totalTrasladosDespachados);
     }
 }
