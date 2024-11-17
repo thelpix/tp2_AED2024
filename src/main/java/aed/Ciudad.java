@@ -1,13 +1,11 @@
 package aed;
 
 public class Ciudad {
-    int id;
-    int ganancias;
-    int perdidas;
-    //constructor de ciudades (pide ID)
+    private int id;
+    private int posicion;
+    private int superavit;
 
-    //¿como hago ganancias? (funcion)
-
-    //¿como hago perdidas? (funcion)
-
+    public Ciudad(int id){
+        this.id = id;
+    }
 }

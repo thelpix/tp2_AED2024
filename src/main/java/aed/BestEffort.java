@@ -9,8 +9,6 @@ public class BestEffort {
     private ArrayList<Integer> ciudadesMayorPerdida; //x2
     private int MayorGanancia; //variable que comparará la ciudad mas rentable
     private int MayorPerdida; //lo mismo pero en perdidas
-    private int superavitOrigen;
-    private int superavitDestino;
     private ComparatorAntiguedad comparatorAntiguedad;
     private ComparatorRedituabilidad comparatorRedituabilidad;
     private int totalTrasladosDespachados;
@@ -20,13 +18,20 @@ public class BestEffort {
     public BestEffort(int cantCiudades, Traslado[] traslados){
         int[] ganancias = new int[cantCiudades]; //O(|C|),
         int[] perdidas = new int[cantCiudades]; //O(|C|), arrays de tamaño fijos
-        int[] promedios = new int[cantCiudades]; //O(|C|)
+        Ciudad[] idCiudades = new Ciudad[cantCiudades]; //O(|C|), almacenara las clases ciudades en sus respectivas posiciones (id's) para traerlo al heapSuperavit
+
         totalTrasladosDespachados = 0;
         
+        for(int i=0; i < idCiudades.length; i++){ //O(|C|)
+            idCiudades[i] = new Ciudad(i);
+        }
         //esto seria O(|C| + |C|) = O(|C|)
         
-        //heapRedituabilidad = buildHeapFloyd(traslados, comparatorRedituabilidad); //O(|T|) asumiendo que use Algoritmo de Floyd, Max-Heap
-        //heapAntiguedad = buildHeapFloyd(traslados, comparatorAntiguedad); //O(|T|), es como un Min-Heap
+        //heap heapRedituabilidad = new heap<Traslado>(traslados, comparatorRedituabilidad); //O(|T|) asumiendo que use Algoritmo de Floyd, Max-Heap
+        //heap heapAntiguedad = new heap<Traslado>(traslados, comparatorAntiguedad); //O(|T|), es como un Min-Heap
+        //heap heapSuperavits = new heap<Ciudad>(ciudades, comparatorInteger); //O(|T|)
+
+        ///¿Cómo logro crear Superavits en un heap, pudiendo actualizar 
         
         //esto seria O(|T| + |T|) = O(|T|)
         //complejidad final: O(|C| + |T|)
@@ -48,8 +53,8 @@ public class BestEffort {
         while(i < n){ //O(n)
             //Desencolar n veces
             /*
-            Object traslado = heapRedituabilidad.desencolarMax(); //O(log(|T|))
-            res[i] = traslado; //cuidado con el aliasing upsi
+            Traslado traslado = heapRedituabilidad.desencolarMax(); //O(log(|T|))
+            res[i] = traslado.id; //cuidado con el aliasing upsi
             
             heapAntiguedad.borrarPos(traslado.posicionHeapAntiguedad)
             //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que encontrar
@@ -86,11 +91,7 @@ public class BestEffort {
             }
             */
 
-            //Parte SuperAvit
-            /*
-            int superavitAux = promedio[]
-            */
-
+            
             gananciaPromedioPorTraslado++;
         }
             //como hay muchos O(1), en complejidad asintotica no se cuentan por constantes

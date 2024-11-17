@@ -1,10 +1,21 @@
 package aed;
 
-public class Heap {
-//constructor que use un comparador, con algoritmo de floyd
+public class Heap<T, C>{
+    private int arrayTam;
+    private T Comparador;
+    private C[] array;
+
+    public Heap(C[] array, T Comparador){
+        this.array = array;
+        this.Comparador = Comparador;
+        //manden a Dios
+        //Aca tengo que hacer heapify
+        //y luego de forma recursiva hacer lo mismo en los padres de las ultimas hojas, de derecha a izquierda, qué
+        //o iterativa jeje
+    }
+}
 //constructor copia? nah
 //encolar
 //desencolar
-//nose
-//como hago que sea min heap y max heap?
-}
+//sacar maximo sin borrarlo :3
+
