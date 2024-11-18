@@ -2,8 +2,8 @@ package aed;
 
 public class Ciudad {
     private int id;
-    private int posicion;
-    private int superavit;
+    int posicion;
+    private int superavit = 0;
 
     public Ciudad(int id){
         this.id = id;
