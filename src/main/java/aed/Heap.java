@@ -8,17 +8,24 @@ import java.util.ArrayList;
 
 //podria tener los 3 comparadores posibles, y en public heap, el 2do parametro me diria cual comparador usar.
 public class Heap<C, H extends Comparador<C>>{
-    private ArrayList<C> array; //puede contener traslados o ciudades
-    private H comparador;
+    private ArrayList<C> array = new ArrayList<C>(); //puede contener traslados o ciudades
+    private H comparador; //Es alguna clase que tiene la interfaz Comparador para usar .comparar()
+
     public Heap(C[] array){ //O(n)
         for (int i = 0; i < array.length; i++){ //O(n) //copia los elementos del array a un arrayList<C>
             this.array.add(array[i]); //O(1) Amortizado
         }
+
         int ultimoPadre = (array.length-1)/2; //O(1)
-        //hacer reversa (siftDown)
-        //desde el ultimo padre hasta el inicio
-        for(int i = ultimoPadre; i >= 0; i--){ //O(n)
-            heapify(this.array, this.array.size(), ultimoPadre);
+
+        /*hacer reversa (siftDown): desde el ultimo padre hasta la raiz
+        Como estoy haciendo desde un approach bottom-up, la altura del subarbol (h) del heapify va incrementando por cada heapify,
+            incrementando el tiempo de ejecucion.
+        Esto es porque empieza una sumatoria que origina en una altura h = 0 (o sea que el padre del heapify es la ultimo hoja) hasta h aproximandose a log n (que el padre del heapify sea la raiz),
+            y que posee dentro de la sumatoria {h / 2^(h+1)}, que es la altura dividida por la cantidad maxima de nodos, haciendo que mientras mayor sea h, converge a 0, ya que h <= 2^h por ende daria:
+        */
+        for(int i = ultimoPadre; i > 0; i--){ //O(n)
+            heapify(this.array, this.array.size(), ultimoPadre); 
         }
     }
 
@@ -51,7 +58,7 @@ public class Heap<C, H extends Comparador<C>>{
         if(comparador.comparar(array.get(elMayorHijo), array.get(padre)) > 0){ //O(1)
             swap(array, padre, elMayorHijo); //O(1)
 
-            heapify(array, arrayTam, elMayorHijo); //O(n)
+            heapify(array, arrayTam, elMayorHijo); //O(log n) al seleccionar uno de los 2 hijos posibles
         }
         
     }
@@ -65,20 +72,18 @@ public class Heap<C, H extends Comparador<C>>{
     public C desencolarMax(){ //O(log n)
         C res;
         res = array.get(0); //O(1)
-        array.set(0, array.get(array.size()-1)); //reemplaza por ultimo elemento, O(1)
-        heapify(array, array.size(), 0); //ordenar el reemplazado //O(n)
+        C ultimoElemento = array.remove(array.size()-1);; //O(1)
+        array.set(0, ultimoElemento); //reemplaza por ultimo elemento, O(1)
+        heapify(array, array.size(), 0); //O(log n)
         return res;
     }
 
     public void encolar(C objeto){ //O(log n)
-        //redimensionar el array antes de encolar si esta lleno
-
         //colocar el objeto al final
-
-        //incrementar tamaño
+        array.add(objeto); //O(1)
 
         //hacer heapify para ordenar
-
+        heapify(array, array.size(), array.size()-1); //O(log n)
     }
 
     public void borrarPos(int posicion){//O(log n)
@@ -88,7 +93,6 @@ public class Heap<C, H extends Comparador<C>>{
 
     public C consultarMax(){ //O(1)
         return array.get(0);
-
     }
 
 }

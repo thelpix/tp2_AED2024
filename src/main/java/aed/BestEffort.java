@@ -58,7 +58,7 @@ public class BestEffort {
             Traslado traslado = heapRedituabilidad.desencolarMax(); //O(log(|T|))
             res[i] = traslado.id;
             
-            heapAntiguedad.borrarPos(traslado.posicionHeapAntiguedad)
+            heapAntiguedad.borrarPos(traslado.posicionHeapAntiguedad);
             //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que encontrar
             //pasaria de O(|T|log(|T|)) -> O(log(|T|))
             
@@ -82,7 +82,7 @@ public class BestEffort {
                 Traslado traslado = heapAntiguedad.desencolarMax(); //O(log(|T|))
                 res[i] = traslado.id; //cuidado con el aliasing upsi
                 
-                heapRedituabilidad.borrarPos(traslado.posicionHeapRedituabilidad)
+                heapRedituabilidad.borrarPos(traslado.posicionHeapRedituabilidad);
                 //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que encontrar
                 //pasaria de O(|T|log(|T|)) -> O(log(|T|))
                 
