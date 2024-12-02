@@ -13,27 +13,28 @@ public class Heap<C, H extends Comparador<C>>{
 
         /*
         para asignar los handles debo primero preguntar si el array es de Traslado[] o Ciudad[]
-        podria usar una interfaz? que de 2 posiciones a ciudad y traslado. (aunque ciudad le sobraran 1 posicion)
          * falta completar esto de abajo
-         */
-        //
-        if(array instanceof Traslado[]){ //aca un for o algo asi
-            if(comparador instanceof ComparatorAntiguedad){
-                int handle = ((Traslado)array[i]).posicionHeapAntiguedad; 
-            }
-            else{
-                int handle = ((Traslado)array[i]).posicionHeapRedituabilidad;
-            }
-        }
-        else{
-            //es de tipo Ciudad[]
-            int handle = ((Ciudad)array[i]).posicion;
-        }
+        */
+        
 
         for (int i = 0; i < array.length; i++){ //O(n)
             //copia los elementos del array a un arrayList<C>
             this.array.add(array[i]); //O(1) 
-            this.array.get(i)
+
+            //asignar handles de los elementos preguntando cuales son
+            if(array instanceof Traslado[]){ //O(1)
+                if(comparador instanceof ComparatorAntiguedad){ //O(1)
+                    ((Traslado)this.array.get(i)).posicionHeapAntiguedad = i; //O(1)
+                }
+                else{
+                    ((Traslado)this.array.get(i)).posicionHeapRedituabilidad = i; //O(1)
+                }
+            }
+            else{
+                //es de tipo Ciudad[]
+                ((Ciudad)this.array.get(i)).posicion = i; //O(1)
+            }
+    
         }
 
         int ultimoPadre = (array.length-1)/2; //O(1)
