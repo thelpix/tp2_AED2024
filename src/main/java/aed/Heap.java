@@ -108,9 +108,10 @@ public class Heap<C, H extends Comparador<C>>{
         heapify(array, array.size(), array.size()-1); //O(log n)
     }
 
-    public void borrarPos(int posicion){//O(log n)
+    public void borrarPos(int posicion){ //O(log n)
         //borra elemento del array
         /*
+        antes de esto tengo que manejar los handles jiji
         array.remove(posicion); //O(1)
         //heapify para ordenar
         int padreDePosicion = (posicion-1)/2; //O(1)
