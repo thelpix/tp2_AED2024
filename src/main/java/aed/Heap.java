@@ -17,17 +17,17 @@ public class Heap<C, H extends Comparador<C>>{
          * falta completar esto de abajo
          */
         //
-        if(array instanceof Traslado[]){
+        if(array instanceof Traslado[]){ //aca un for o algo asi
             if(comparador instanceof ComparatorAntiguedad){
-                //int handle = array[i].posicionHeapAntiguedad
+                int handle = ((Traslado)array[i]).posicionHeapAntiguedad; 
             }
             else{
-                //int handle = array[i].posicionRedituabilidad 
+                int handle = ((Traslado)array[i]).posicionHeapRedituabilidad;
             }
         }
         else{
             //es de tipo Ciudad[]
-            //int handle = array[i].posicion
+            int handle = ((Ciudad)array[i]).posicion;
         }
 
         for (int i = 0; i < array.length; i++){ //O(n)
