@@ -3,10 +3,8 @@ package aed;
 import java.util.ArrayList;
 
 public class BestEffort {
-    private int cantCiudades;
-    private Traslado[] traslados;
-    private ArrayList<Integer> ciudadesMayorGanancia; //donde acumulo para retornar
-    private ArrayList<Integer> ciudadesMayorPerdida; //x2
+    private ArrayList<Integer> ciudadesMayorGanancia = new ArrayList<Integer>(); //donde acumulo para retornar
+    private ArrayList<Integer> ciudadesMayorPerdida = new ArrayList<Integer>(); //x2
     private int MayorGanancia; //variable que comparará la ciudad mas rentable
     private int MayorPerdida; //lo mismo pero en perdidas
     private int totalTrasladosDespachados;
@@ -19,20 +17,23 @@ public class BestEffort {
     //usar un array y arraylist para superavit?
     
     public BestEffort(int cantCiudades, Traslado[] traslados){
-        int[] ganancias = new int[cantCiudades]; //O(|C|),
-        int[] perdidas = new int[cantCiudades]; //O(|C|), arrays de tamaño fijos
+
+        ganancias = new int[cantCiudades]; //O(|C|),
+        perdidas = new int[cantCiudades]; //O(|C|), arrays de tamaño fijos
         Ciudad[] idCiudades = new Ciudad[cantCiudades]; //O(|C|), almacenara las clases ciudades en sus respectivas posiciones (id's) para traerlo al heapSuperavit
 
         totalTrasladosDespachados = 0;
-        
-        for(int i=0; i < idCiudades.length; i++){ //O(|C|)
+        //inicializar las ganancias y perdidas en 0 y las ciudades con su id
+        for(int i=0; i < cantCiudades; i++){ //O(|C| + |T|)
             idCiudades[i] = new Ciudad(i);
+            ganancias[i] = 0;
+            perdidas[i] = 0;
         }
         //esto seria O(|C| + |C|) = O(|C|)
         
-        heapRedituabilidad = new Heap<>(traslados); //O(|T|) asumiendo que use Algoritmo de Floyd, Max-Heap
-        heapAntiguedad = new Heap<>(traslados); //O(|T|), es como un Min-Heap
-        heapSuperavits = new Heap<>(idCiudades); //O(|T|)
+        heapRedituabilidad = new Heap<>(traslados, new ComparatorRedituabilidad()); //O(|T|) asumiendo que use Algoritmo de Floyd, Max-Heap
+        heapAntiguedad = new Heap<>(traslados, new ComparatorAntiguedad()); //O(|T|), es como un Min-Heap
+        heapSuperavits = new Heap<>(idCiudades, new ComparatorGanancia()); //O(|T|)
 
         ///¿Cómo logro crear Superavits en un heap, pudiendo actualizar 
         
@@ -53,13 +54,13 @@ public class BestEffort {
     public int[] despacharMasRedituables(int n){ //O(n(log|T|) + log(|C|))
         int i = 0; //O(1)
         int[] res = new int[n];
-        while(i < n){ //O(n)
+        while(i < n && i < heapRedituabilidad.array.size()){ //O(n)
             //Desencolar n veces
             Traslado traslado = heapRedituabilidad.desencolarMax(); //O(log(|T|))
             res[i] = traslado.id;
             
-            heapAntiguedad.borrarPos(traslado.posicionHeapAntiguedad);
-            //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que encontrar
+            heapAntiguedad.borrarPos(traslado.posicionHeapAntiguedad); //O(log n)
+            //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que buscar
             //pasaria de O(|T|log(|T|)) -> O(log(|T|))
             
             //Parte de Ciudades, podria modularizarlo en otra funcion privada
@@ -125,6 +126,7 @@ public class BestEffort {
     }
 
     public int ciudadConMayorSuperavit(){
+        //corregir ya que C no puedo poner simplemente "posicion"
         return heapSuperavits.consultarMax().posicion;
     }
     

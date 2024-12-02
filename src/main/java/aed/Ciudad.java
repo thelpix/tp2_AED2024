@@ -1,6 +1,6 @@
 package aed;
 
-public class Ciudad {
+public class Ciudad{
     private int id;
     int posicion;
     private int superavit = 0;
@@ -12,4 +12,5 @@ public class Ciudad {
     public int superavit(){
         return this.superavit;
     }
+
 }

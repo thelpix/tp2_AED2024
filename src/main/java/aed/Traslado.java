@@ -1,6 +1,6 @@
 package aed;
 
-public class Traslado {
+public class Traslado{
     
     int id;
     int origen;
@@ -9,7 +9,7 @@ public class Traslado {
     int timestamp;
     //handles
     int posicionHeapAntiguedad;
-    int posicionHeapRedituabilidad; 
+    int posicionHeapRedituabilidad;
 
     public Traslado(int id, int origen, int destino, int gananciaNeta, int timestamp){
         this.id = id;

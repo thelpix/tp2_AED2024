@@ -2,18 +2,38 @@ package aed;
 
 import java.util.ArrayList;
 
-/*
- * CHUSMEAR COMPLEJIDAD DE HEAPIFY PORQUE ROMPE EL HEAP() (O(n^2)) o desencolarMax(nlogn)
- */
 
 //podria tener los 3 comparadores posibles, y en public heap, el 2do parametro me diria cual comparador usar.
 public class Heap<C, H extends Comparador<C>>{
-    private ArrayList<C> array = new ArrayList<C>(); //puede contener traslados o ciudades
-    private H comparador; //Es alguna clase que tiene la interfaz Comparador para usar .comparar()
+    ArrayList<C> array = new ArrayList<C>(); //puede contener traslados o ciudades
+    H comparador; //Es alguna clase que tiene la interfaz Comparador para usar .comparar()
 
-    public Heap(C[] array){ //O(n)
-        for (int i = 0; i < array.length; i++){ //O(n) //copia los elementos del array a un arrayList<C>
-            this.array.add(array[i]); //O(1) Amortizado
+    public Heap(C[] array, H comparador){ //O(n)
+        this.comparador = comparador; //O(1)
+
+        /*
+        para asignar los handles debo primero preguntar si el array es de Traslado[] o Ciudad[]
+        podria usar una interfaz? que de 2 posiciones a ciudad y traslado. (aunque ciudad le sobraran 1 posicion)
+         * falta completar esto de abajo
+         */
+        //
+        if(array instanceof Traslado[]){
+            if(comparador instanceof ComparatorAntiguedad){
+                //int handle = array[i].posicionHeapAntiguedad
+            }
+            else{
+                //int handle = array[i].posicionRedituabilidad 
+            }
+        }
+        else{
+            //es de tipo Ciudad[]
+            //int handle = array[i].posicion
+        }
+
+        for (int i = 0; i < array.length; i++){ //O(n)
+            //copia los elementos del array a un arrayList<C>
+            this.array.add(array[i]); //O(1) 
+            this.array.get(i)
         }
 
         int ultimoPadre = (array.length-1)/2; //O(1)
@@ -24,7 +44,7 @@ public class Heap<C, H extends Comparador<C>>{
         Esto es porque empieza una sumatoria que origina en una altura h = 0 (o sea que el padre del heapify es la ultimo hoja) hasta h aproximandose a log n (que el padre del heapify sea la raiz),
             y que posee dentro de la sumatoria {h / 2^(h+1)}, que es la altura dividida por la cantidad maxima de nodos, haciendo que mientras mayor sea h, converge a 0, ya que h <= 2^h por ende daria:
         */
-        for(int i = ultimoPadre; i > 0; i--){ //O(n)
+        for(int i = ultimoPadre; i >= 0; i--){ //O(n)
             heapify(this.array, this.array.size(), ultimoPadre); 
         }
     }
@@ -37,21 +57,16 @@ public class Heap<C, H extends Comparador<C>>{
         int padre = i; //O(1)
         int izq = 2*i+1; //posicion izq O(1)
         int der = 2*i+2; //posicion der O(1)
-        int elMayorHijo; //O(1)
+        int elMayorHijo = 0; //O(1)
+ 
 
-        //cuando solo existe un hijo y es el izq
-        if(der >= arrayTam) { //O(1)
+        if(izq < arrayTam && (der >= arrayTam || comparador.comparar(array.get(izq), array.get(der)) >= 0)){ //O(1)
             elMayorHijo = izq; //O(1)
         }
-        //cuando existen dos hijos
-        else{
-            if(comparador.comparar(array.get(izq), array.get(der)) >= 0){ //O(1)
-                elMayorHijo = izq; //O(1)
-            }
-            else{
-                elMayorHijo = der; //O(1)
-            }
+        else if(der < arrayTam){
+            elMayorHijo = der; //O(1)
         }
+
 
         //Swap si el hijo es mayor al padre
         //Llamar recursivamente a heapify en la posicion del hijo mayor
@@ -72,9 +87,16 @@ public class Heap<C, H extends Comparador<C>>{
     public C desencolarMax(){ //O(log n)
         C res;
         res = array.get(0); //O(1)
-        C ultimoElemento = array.remove(array.size()-1);; //O(1)
-        array.set(0, ultimoElemento); //reemplaza por ultimo elemento, O(1)
-        heapify(array, array.size(), 0); //O(log n)
+        
+        //se reemplaza el ultimo elemento si hay mas de 2 nodos
+        if (array.size() > 1){
+            C ultimoElemento = array.remove(array.size()-1);; //O(1)
+            array.set(0, ultimoElemento); //reemplaza por ultimo elemento, O(1)
+            heapify(array, array.size(), 0); //O(log n)
+        }
+        else{
+            array.remove(0);
+        }
         return res;
     }
 
@@ -88,7 +110,12 @@ public class Heap<C, H extends Comparador<C>>{
 
     public void borrarPos(int posicion){//O(log n)
         //borra elemento del array
+        /*
+        array.remove(posicion); //O(1)
         //heapify para ordenar
+        int padreDePosicion = (posicion-1)/2; //O(1)
+        heapify(array, array.size(), padreDePosicion); //O(log n)
+        */
     }
 
     public C consultarMax(){ //O(1)
