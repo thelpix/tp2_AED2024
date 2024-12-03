@@ -34,25 +34,26 @@ public class Heap<C, H extends Comparador<C>>{
         }
     }
 
+
     //asigna handle segun si es Traslado o Ciudad el objeto
     private void actualizarHandle(int nuevaPosicion){  //O(1)
         //pregunta segun cual comparador usar para obtener su posicion
         if(comparador instanceof ComparatorAntiguedad){ //O(1)
-            ((Traslado)array.get(nuevaPosicion)).posicionHeapAntiguedad = nuevaPosicion; //O(1)
+            ((Traslado) array.get(nuevaPosicion)).posicionHeapAntiguedad = nuevaPosicion; //O(1)
         }
         else if(comparador instanceof ComparatorRedituabilidad){
-            ((Traslado)array.get(nuevaPosicion)).posicionHeapRedituabilidad = nuevaPosicion; //O(1)
+            ((Traslado) array.get(nuevaPosicion)).posicionHeapRedituabilidad = nuevaPosicion; //O(1)
         }
         else if(comparador instanceof ComparatorGanancia){
             //es de tipo Ciudad[]
-            ((Ciudad)this.array.get(nuevaPosicion)).posicion = nuevaPosicion; //O(1)
+            ((Ciudad) array.get(nuevaPosicion)).posicion = nuevaPosicion; //O(1)
         }
     }
     //tengo que saber de alguna manera si el array es de traslados o ciudades??
     //obtener el tipo de clase que es, y segun el caso, ejecutar ciertas operaciones o no (modularizar)
 
     //el mismo array, el tamaño del array y la posicion
-    private void heapify(ArrayList<C> array, int arrayTam, int i){ //O(n)
+    private void heapify(ArrayList<C> array, int arrayTam, int i){ //O(log n)
         int padre = i; //O(1)
         int izq = 2*i+1; //posicion izq O(1)
         int der = 2*i+2; //posicion der O(1)
@@ -116,13 +117,15 @@ public class Heap<C, H extends Comparador<C>>{
     }
 
     public void borrarPos(int posicion){ //O(log n)
-        //borra elemento del array
-        array.remove(posicion); //O(1)
+        C ultimoElemento = array.remove(array.size() - 1); //O(1)
 
-        //heapify para ordenar
-        int padreDePosicion = (posicion-1)/2; //O(1)
-        heapify(array, array.size(), padreDePosicion); //O(log n)
-
+        if (posicion < array.size()) { // por si acaso
+            array.set(posicion, ultimoElemento); // O(1)
+            actualizarHandle(posicion); // Actualiza el handle del elemento movido, O(1)
+    
+            // Reestablecer la propiedad del heap
+            heapify(array, array.size(), posicion); // chequear el orden al modificar el valor de la posición.
+        }
     }
 
     public C consultarMax(){ //O(1)
