@@ -31,11 +31,9 @@ public class BestEffort {
         }
         //esto seria O(|C| + |C|) = O(|C|)
         
-        heapRedituabilidad = new Heap<>(traslados, new ComparatorRedituabilidad()); //O(|T|) asumiendo que use Algoritmo de Floyd, Max-Heap
-        heapAntiguedad = new Heap<>(traslados, new ComparatorAntiguedad()); //O(|T|), es como un Min-Heap
+        heapRedituabilidad = new Heap<>(traslados, new ComparatorRedituabilidad()); //O(|T|) Max-Heap
+        heapAntiguedad = new Heap<>(traslados, new ComparatorAntiguedad()); //O(|T|), Min-Heap
         heapSuperavits = new Heap<>(idCiudades, new ComparatorGanancia()); //O(|T|)
-
-        ///¿Cómo logro crear Superavits en un heap, pudiendo actualizar 
         
         //esto seria O(|T| + |T|) = O(|T|)
         //complejidad final: O(|C| + |T|)
@@ -50,12 +48,13 @@ public class BestEffort {
         }
         //complejidad = O(|traslados|*log(|T|))
     }
-    
-    public int[] despacharMasRedituables(int n){ //O(n(log|T|) + log(|C|))
+
+    public int[] despacharMasRedituables(int n){ //O(n(log|T|) + log(|C|)))
         int i = 0; //O(1)
         int[] res = new int[n];
         while(i < n && i < heapRedituabilidad.array.size()){ //O(n)
             //Desencolar n veces
+            //porque el el heap tiene tamaño 6 y no antes del desencolar???
             Traslado traslado = heapRedituabilidad.desencolarMax(); //O(log(|T|))
             res[i] = traslado.id;
             
@@ -65,6 +64,7 @@ public class BestEffort {
             
             //Parte de Ciudades, podria modularizarlo en otra funcion privada
             actualizarCiudades(traslado.destino, traslado.origen, traslado.gananciaNeta);
+            i++;
         }
         totalTrasladosDespachados++;
             //como hay muchos O(1), en complejidad asintotica no se cuentan por constantes
@@ -73,12 +73,12 @@ public class BestEffort {
         return res;
     }
     
-    public int[] despacharMasAntiguos(int n){
+    public int[] despacharMasAntiguos(int n){ //O(n(log |T|) + log |C|))
         //despachar mas antiguos es muy copia y pega, al ser heapAntiguedad un Min-Heap, sacara de forma creciente,
         //teniendo que alterar heapRedituabilidad y la parte de actualizar ciudades es exactamente la misma
             int i = 0; //O(1)
             int[] res = new int[n];
-            while(i < n){ //O(n)
+            while(i < n && i < heapAntiguedad.array.size()){ //O(n)
                 //Desencolar n veces
                 Traslado traslado = heapAntiguedad.desencolarMax(); //O(log(|T|))
                 res[i] = traslado.id; //cuidado con el aliasing upsi
@@ -89,6 +89,7 @@ public class BestEffort {
                 
                 //Parte de Ciudades
                 actualizarCiudades(traslado.destino, traslado.origen, traslado.gananciaNeta);
+                i++;
             }
                 //como hay muchos O(1), en complejidad asintotica no se cuentan por constantes
                 //complejidad final = O(n(log|T| + log|T|)) -> O(n(log|T|))
@@ -98,29 +99,31 @@ public class BestEffort {
     }
     
     private void actualizarCiudades(int destino, int origen, int gananciaNeta){
+        perdidas[destino] += gananciaNeta; //O(1)
+        ganancias[origen] += gananciaNeta; //O(1)
         int perdidaAux = perdidas[destino]; //O(1)
         int gananciaAux = ganancias[origen]; //O(1)
 
-        perdidas[destino] =+ gananciaNeta; //O(1)
-        ganancias[origen] =+ gananciaNeta; //O(1)
-        gananciaPromedioPorTraslado =+ gananciaNeta;
+        gananciaPromedioPorTraslado += gananciaNeta;
         //usare dos variables temporales para comparar
         
-        if(perdidaAux > MayorPerdida){ //creo que el if es O(1)
+        if(perdidaAux > MayorPerdida){ //O(1)
             MayorPerdida = perdidaAux; //O(1)
             ciudadesMayorPerdida.clear();
             ciudadesMayorPerdida.add(destino); //O(1) amortizado
         }
-        else if(perdidaAux == MayorPerdida){ //creo que sigue siendo O(1)
+        else if(perdidaAux == MayorPerdida){ //O(1)
+            MayorPerdida = gananciaNeta;
             ciudadesMayorPerdida.add(destino); //O(1) amortizado
         }
         
-        if(gananciaAux > MayorGanancia){ //creo que el if es O(1)
+        if(gananciaAux > MayorGanancia){ //O(1)
             MayorGanancia = gananciaAux; //O(1)
             ciudadesMayorGanancia.clear();
             ciudadesMayorGanancia.add(origen);
         }
-        else if(gananciaAux == MayorGanancia){ //creo que sigue siendo O(1)
+        else if(gananciaAux == MayorGanancia){ //O(1)
+            MayorGanancia = gananciaNeta;
             ciudadesMayorGanancia.add(origen); //O(1) amortizado
         }
     }
