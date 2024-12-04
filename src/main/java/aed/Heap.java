@@ -30,7 +30,7 @@ public class Heap<C, H extends Comparador<C>>{
             y que posee dentro de la sumatoria {h / 2^(h+1)}, que es la altura dividida por la cantidad maxima de nodos, haciendo que mientras mayor sea h, converge a 0, ya que h <= 2^h por ende daria:
         */
         for(int i = ultimoPadre; i >= 0; i--){ //O(n)
-            heapify(this.array, this.array.size(), i); 
+            heapify(this.array.size(), i); 
         }
     }
 
@@ -53,7 +53,7 @@ public class Heap<C, H extends Comparador<C>>{
     //obtener el tipo de clase que es, y segun el caso, ejecutar ciertas operaciones o no (modularizar)
 
     //el mismo array, el tamaño del array y la posicion
-    private void heapify(ArrayList<C> array, int arrayTam, int i){ //O(log n)
+    private void heapify(int arrayTam, int i){ //O(log n)
         int padre = i; //O(1)
         int izq = 2*i+1; //posicion izq O(1)
         int der = 2*i+2; //posicion der O(1)
@@ -71,13 +71,13 @@ public class Heap<C, H extends Comparador<C>>{
         //Swap si el hijo es mayor al padre
         //Llamar recursivamente a heapify en la posicion del hijo mayor
         if(elMayorHijo != -1 && comparador.comparar(array.get(elMayorHijo), array.get(padre)) > 0){ //O(1)
-            swap(array, padre, elMayorHijo); //O(1)
-            heapify(array, arrayTam, elMayorHijo); //O(log n) al seleccionar uno de los 2 hijos posibles
+            swap(padre, elMayorHijo); //O(1)
+            heapify(arrayTam, elMayorHijo); //O(log n) al seleccionar uno de los 2 hijos posibles
         }
         
     }
 
-    private void swap(ArrayList<C> array, int padre, int elMayorHijo){ //O(1)
+    private void swap(int padre, int elMayorHijo){ //O(1)
         C c = array.get(padre); //O(1)
 
         //cuando hago swap, intercambio las posiciones del padre al hijoMayor, y el hijoMayor al padre
@@ -98,7 +98,7 @@ public class Heap<C, H extends Comparador<C>>{
 
             array.set(0, ultimoElemento); //reemplaza por ultimo elemento, O(1)
             actualizarHandle(0);
-            heapify(array, array.size(), 0); //O(log n)
+            heapify(array.size(), 0); //O(log n)
         }
         else{
             array.remove(0);
@@ -111,9 +111,10 @@ public class Heap<C, H extends Comparador<C>>{
         //colocar el objeto al final
         array.add(objeto); //O(1)
         actualizarHandle(array.size()-1);
+        int padre = (array.size()-2)/2;
 
-        //hacer heapify para ordenar
-        heapify(array, array.size(), array.size()-1); //O(log n)
+        //hacer siftUp para ordenar
+        siftUp(array.size()-1);; //O(log n) 
     }
 
     public void borrarPos(int posicion){ //O(log n)
@@ -124,7 +125,22 @@ public class Heap<C, H extends Comparador<C>>{
             actualizarHandle(posicion); // Actualiza el handle del elemento movido, O(1)
     
             // Reestablecer la propiedad del heap
-            heapify(array, array.size(), posicion); // chequear el orden al modificar el valor de la posición.
+            heapify(array.size(), posicion); // chequear el orden al modificar el valor de la posición.
+        }
+    }
+
+    private void siftUp(int index) { //O(log n)
+        while (index > 0) { //O(log n)
+            int padre = (index - 1) / 2;
+    
+            // Si el elemento actual no rompe la propiedad del heap, termina
+            if (comparador.comparar(array.get(index), array.get(padre)) <= 0) { //O(1)
+                break;
+            }
+    
+            swap(index, padre); //O(1)
+    
+            index = padre;
         }
     }
 

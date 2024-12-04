@@ -52,7 +52,7 @@ public class BestEffort {
     public int[] despacharMasRedituables(int n){ //O(n(log|T|) + log(|C|)))
         int i = 0; //O(1)
         int[] res = new int[n];
-        while(i < n && i < heapRedituabilidad.array.size()){ //O(n)
+        while(i < n && heapRedituabilidad.array.size() > 0){ //O(n)
             //Desencolar n veces
             //porque el el heap tiene tamaño 6 y no antes del desencolar???
             Traslado traslado = heapRedituabilidad.desencolarMax(); //O(log(|T|))
@@ -78,7 +78,7 @@ public class BestEffort {
         //teniendo que alterar heapRedituabilidad y la parte de actualizar ciudades es exactamente la misma
             int i = 0; //O(1)
             int[] res = new int[n];
-            while(i < n && i < heapAntiguedad.array.size()){ //O(n)
+            while(i < n && heapAntiguedad.array.size() > 0){ //O(n)
                 //Desencolar n veces
                 Traslado traslado = heapAntiguedad.desencolarMax(); //O(log(|T|))
                 res[i] = traslado.id; //cuidado con el aliasing upsi
@@ -101,7 +101,7 @@ public class BestEffort {
     private void actualizarCiudades(int destino, int origen, int gananciaNeta){
         perdidas[destino] += gananciaNeta; //O(1)
         ganancias[origen] += gananciaNeta; //O(1)
-        int perdidaAux = perdidas[destino]; //O(1)
+        int perdidaAux = perdidas[destino]; //O(1) //siento que esta mal pero idk
         int gananciaAux = ganancias[origen]; //O(1)
 
         gananciaPromedioPorTraslado += gananciaNeta;
@@ -113,7 +113,7 @@ public class BestEffort {
             ciudadesMayorPerdida.add(destino); //O(1) amortizado
         }
         else if(perdidaAux == MayorPerdida){ //O(1)
-            MayorPerdida = gananciaNeta;
+            MayorPerdida = gananciaNeta;//raro
             ciudadesMayorPerdida.add(destino); //O(1) amortizado
         }
         

@@ -1,5 +1,6 @@
 package aed;
 
+//como no puedou sar java.util, creo mi propio compareTo
 //comparador generico de enteros
 public class ComparatorInteger {
     public int compare(int x, int y){
