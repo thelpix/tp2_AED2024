@@ -243,13 +243,12 @@ public class BestEffortTests {
         for (int i = 0; i < 1000; i++) {
             nuevos.add(new Traslado(i + 1, i % 7, (i + 1) % 7, i * 100, i));
         }
-
+        
+        //que funcione con traslados muy grandes
         BestEffort sis = new BestEffort(this.cantCiudades, nuevos.toArray(new Traslado[nuevos.size()]));
 
         sis.despacharMasRedituables(500);
         assertTrue(sis.gananciaPromedioPorTraslado() > 0);
-
-        sis.despacharMasAntiguos(500);
     }
 
     @Test

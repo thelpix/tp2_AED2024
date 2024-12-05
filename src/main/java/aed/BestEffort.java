@@ -15,6 +15,8 @@ public class BestEffort {
     private Heap<Traslado, ComparatorAntiguedad> heapAntiguedad;
     private Heap<Ciudad, ComparatorGanancia> heapSuperavits;
     
+    //esperamos que le guste :)
+    
     public BestEffort(int cantCiudades, Traslado[] traslados){
 
         ganancias = new int[cantCiudades]; //O(|C|),
