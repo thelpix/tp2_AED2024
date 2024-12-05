@@ -5,8 +5,8 @@ public class Traslado{
     int id;
     int origen;
     int destino;
-    int gananciaNeta;
-    int timestamp;
+    Integer gananciaNeta;
+    Integer timestamp;
     //handles
     int posicionHeapAntiguedad;
     int posicionHeapRedituabilidad;
