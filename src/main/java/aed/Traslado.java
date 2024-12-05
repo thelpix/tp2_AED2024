@@ -7,9 +7,6 @@ public class Traslado{
     int destino;
     Integer gananciaNeta;
     Integer timestamp;
-    //handles
-    int posicionHeapAntiguedad;
-    int posicionHeapRedituabilidad;
 
     public Traslado(int id, int origen, int destino, int gananciaNeta, int timestamp){
         this.id = id;

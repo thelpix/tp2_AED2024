@@ -59,7 +59,7 @@ public class BestEffort {
             Traslado traslado = heapRedituabilidad.desencolarMax(); //O(log(|T|))
             res[i] = traslado.id;
             
-            heapAntiguedad.borrarPos(traslado.posicionHeapAntiguedad); //O(log n)
+            heapAntiguedad.borrarPos(heapAntiguedad.handles.get(traslado.id -1)); //O(log n)
             //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que buscar
             //pasaria de O(|T|log(|T|)) -> O(log(|T|))
             
@@ -85,7 +85,7 @@ public class BestEffort {
                 Traslado traslado = heapAntiguedad.desencolarMax(); //O(log(|T|))
                 res[i] = traslado.id; //cuidado con el aliasing upsi
                 
-                heapRedituabilidad.borrarPos(traslado.posicionHeapRedituabilidad);
+                heapRedituabilidad.borrarPos(heapRedituabilidad.handles.get(traslado.id -1));
                 //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que encontrar
                 //pasaria de O(|T|log(|T|)) -> O(log(|T|))
                 
@@ -119,11 +119,11 @@ public class BestEffort {
         
         if(gananciaAux > MayorGanancia){ //O(1)
             MayorGanancia = gananciaAux; //O(1)
-            ciudadesMayorGanancia.clear();
-            ciudadesMayorGanancia.add(origen);
+            ciudadesMayorGanancia.clear(); //O(1)
+            ciudadesMayorGanancia.add(origen); //O(1) amortizado
         }
         else if(gananciaAux == MayorGanancia){ //O(1)
-            MayorGanancia = gananciaNeta;
+            MayorGanancia = gananciaNeta; //O(1)
             ciudadesMayorGanancia.add(origen); //O(1) amortizado
         }
     }
@@ -133,8 +133,8 @@ public class BestEffort {
         //una vez actualizadas, debe ordenadarlas para respetar la propiedad del heap
 
         //la posicion la obtendre a traves de un array fijo que contiene los handles por indice
-        heapSuperavits.modValorCiudad(heapSuperavits.handlesCiudades[destino], -ganancia); //O(log |C|) ya que solo hay cantCiudades de handles
-        heapSuperavits.modValorCiudad(heapSuperavits.handlesCiudades[origen], ganancia); //O(log |C|)
+        heapSuperavits.modValorCiudad(heapSuperavits.handles.get(destino), -ganancia); //O(log |C|) ya que solo hay cantCiudades de handles
+        heapSuperavits.modValorCiudad(heapSuperavits.handles.get(origen), ganancia); //O(log |C|)
 
     }
 

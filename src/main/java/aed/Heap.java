@@ -7,17 +7,16 @@ import java.util.ArrayList;
 public class Heap<C, H extends Comparador<C>>{
     ArrayList<C> array = new ArrayList<C>(); //puede contener traslados o ciudades
     H comparador; //Es alguna clase que tiene la interfaz Comparador para usar .comparar()
-    int[] handlesCiudades; //array fijo usado para almacenar los handles de cada Ciudad, si lo quisiese implementar a Traslados deberia ser un arrayList<>
+    ArrayList<Integer> handles; //los handles contienen las posiciones de sus respectivos elementos, ordenados usando los ids que empiezan en 0 en ciudades, o en traslados que lo paso con un -1
 
     public Heap(C[] array, H comparador){ //O(n)
         this.comparador = comparador; //O(1)
-        if (array instanceof Ciudad[]){
-            handlesCiudades = new int[array.length]; //O(1)
-        }
+        handles = new ArrayList<Integer>(array.length); //O(1)
 
         for (int i = 0; i < array.length; i++){ //O(n)
             //copia los elementos del array a un arrayList<C>
             this.array.add(array[i]); //O(1)
+            handles.add(0); //O(1) amortizado, inicializar los handles
 
             //asignar handles de los elementos primera vez
             actualizarHandle(i); //O(1)
@@ -41,17 +40,14 @@ public class Heap<C, H extends Comparador<C>>{
     //asigna handle segun si es Traslado o Ciudad el objeto
     private void actualizarHandle(int nuevaPosicion){  //O(1)
         //pregunta segun cual comparador usar para obtener su posicion
-        if(comparador instanceof ComparatorAntiguedad){ //O(1)
-            ((Traslado) array.get(nuevaPosicion)).posicionHeapAntiguedad = nuevaPosicion; //O(1)
-        }
-        else if(comparador instanceof ComparatorRedituabilidad){
-            ((Traslado) array.get(nuevaPosicion)).posicionHeapRedituabilidad = nuevaPosicion; //O(1)
+        if(comparador instanceof ComparatorAntiguedad || comparador instanceof ComparatorRedituabilidad){ //O(1)
+            handles.set(((Traslado) array.get(nuevaPosicion)).id -1, Integer.valueOf(nuevaPosicion));
         }
         else if(comparador instanceof ComparatorGanancia){
             //es de tipo Ciudad[]
             ((Ciudad) array.get(nuevaPosicion)).posicion = nuevaPosicion; //O(1)
             //actualizar handlesCiudades[]
-            handlesCiudades[((Ciudad) array.get(nuevaPosicion)).id] = nuevaPosicion;
+            handles.set(((Ciudad) array.get(nuevaPosicion)).id, Integer.valueOf(nuevaPosicion)); //O(1)
         }
     }
     //tengo que saber de alguna manera si el array es de traslados o ciudades??
@@ -94,10 +90,9 @@ public class Heap<C, H extends Comparador<C>>{
     }
     
     public C desencolarMax(){ //O(log n)
-        C res;
-        res = array.get(0); //O(1)
-        
         //se reemplaza el ultimo elemento si hay mas de 2 nodos
+        C res;
+        res = array.get(0); //O(1
         if (array.size() > 1){
             C ultimoElemento = array.remove(array.size()-1); //O(1)
 
@@ -122,20 +117,21 @@ public class Heap<C, H extends Comparador<C>>{
     }
 
     public void borrarPos(int posicion){ //O(log n)
-        C ultimoElemento = array.remove(array.size() - 1); //O(1)
-
-        if (posicion < array.size()) { // por si acaso
-            array.set(posicion, ultimoElemento); // O(1)
-            actualizarHandle(posicion); // Actualiza el handle del elemento movido, O(1)
-    
-            // Reestablecer la propiedad del heap
-            siftDown(posicion); // chequear el orden al modificar el valor de la posición.
+        int ultimoIndex = array.size() - 1;
+        if (posicion == ultimoIndex) {
+            array.remove(ultimoIndex);
+        } else {
+            C ultimo = array.remove(ultimoIndex);
+            array.set(posicion, ultimo);
+            actualizarHandle(posicion);
+            siftDown(posicion);
+            siftUp(posicion);
         }
     }
 
     private void siftUp(int i) { //O(log n) //usado en encolar por ej.
         while (i > 0) { //O(log n)
-            int padre = (i - 2) / 2;
+            int padre = (i - 1) / 2; //O(1)
     
             // Si el elemento actual no rompe la propiedad del heap, termina
             if (comparador.comparar(array.get(i), array.get(padre)) >= 0) { //O(1)
@@ -146,7 +142,7 @@ public class Heap<C, H extends Comparador<C>>{
     }
 
     public C consultarMax(){ //O(1)
-        return array.get(0);
+        return array.isEmpty() ? null : array.get(0);
     }
 
     public void modValorCiudad(int posicion, int valor){ //O(log n)
