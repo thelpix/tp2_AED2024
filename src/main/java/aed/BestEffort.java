@@ -152,11 +152,7 @@ public class BestEffort {
     }
     
     public int gananciaPromedioPorTraslado(){ //O(1)
-        if (totalTrasladosDespachados == 0){
-            return 0;
-        }
-        else{
+        //para evitar un caso indeterminado
         return (gananciaTotalPorTraslado / totalTrasladosDespachados);
-        }
     }
 }

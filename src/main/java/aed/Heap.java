@@ -9,16 +9,20 @@ public class Heap<C, H extends Comparador<C>>{
     H comparador; //Es alguna clase que tiene la interfaz Comparador para usar .comparar()
     ArrayList<Integer> handles; //los handles contienen las posiciones de sus respectivos elementos, ordenados usando los ids que empiezan en 0 en ciudades, o en traslados que lo paso con un -1
 
-    public Heap(C[] array, H comparador){ //O(n)
+    public Heap(C[] array, H comparador){ //O(n) + O(n) + O(n) = O(n)
         this.comparador = comparador; //O(1)
         handles = new ArrayList<Integer>(array.length); //O(1)
 
+        //primero, añade todos los handles necesarios
+        for (int i = 0; i < array.length; i++){ //O(n)
+            handles.add(0); //O(1) amortizado, inicializa los handles
+        }
+
         for (int i = 0; i < array.length; i++){ //O(n)
             //copia los elementos del array a un arrayList<C>
-            this.array.add(array[i]); //O(1)
-            handles.add(0); //O(1) amortizado, inicializar los handles
+            this.array.add(array[i]); //O(1) amortizado
 
-            //asignar handles de los elementos primera vez
+            //actualiza los handles por primera vez
             actualizarHandle(i); //O(1)
     
         }
@@ -110,6 +114,7 @@ public class Heap<C, H extends Comparador<C>>{
     public void encolar(C objeto){ //O(log n)
         //colocar el objeto al final
         array.add(objeto); //O(1)
+        handles.add(array.size());
         actualizarHandle(array.size()-1);
 
         //hacer siftUp para ordenar
