@@ -7,11 +7,13 @@ import java.util.ArrayList;
 public class Heap<C, H extends Comparador<C>>{
     ArrayList<C> array = new ArrayList<C>(); //puede contener traslados o ciudades
     H comparador; //Es alguna clase que tiene la interfaz Comparador para usar .comparar()
-    int[] handlesCiudades; //como los traslados tienen sus posiciones como atributos, este handle solo contendra de Ciudades, pero seria una solucion válida si no quisiese que sean atributos.
+    int[] handlesCiudades; //array fijo usado para almacenar los handles de cada Ciudad, si lo quisiese implementar a Traslados deberia ser un arrayList<>
 
     public Heap(C[] array, H comparador){ //O(n)
         this.comparador = comparador; //O(1)
-        handlesCiudades = new int[array.length]; //O(1)
+        if (array instanceof Ciudad[]){
+            handlesCiudades = new int[array.length]; //O(1)
+        }
 
         for (int i = 0; i < array.length; i++){ //O(n)
             //copia los elementos del array a un arrayList<C>

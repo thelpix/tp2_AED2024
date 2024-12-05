@@ -8,10 +8,9 @@ public class BestEffort {
     private int MayorGanancia; //variable que comparará la ciudad mas rentable
     private int MayorPerdida; //lo mismo pero en perdidas
     private int totalTrasladosDespachados;
-    private int gananciaPromedioPorTraslado;
+    private int gananciaTotalPorTraslado;
     private int[] ganancias;
     private int[] perdidas;
-    private int[] handlesCiudades;
     private Heap<Traslado, ComparatorRedituabilidad> heapRedituabilidad;
     private Heap<Traslado, ComparatorAntiguedad> heapAntiguedad;
     private Heap<Ciudad, ComparatorGanancia> heapSuperavits;
@@ -24,6 +23,7 @@ public class BestEffort {
         Ciudad[] idCiudades = new Ciudad[cantCiudades]; //O(|C|), almacenara las clases ciudades en sus respectivas posiciones (id's) para traerlo al heapSuperavit
 
         totalTrasladosDespachados = 0;
+        gananciaTotalPorTraslado = 0;
         //inicializar las ganancias y perdidas en 0 y las ciudades con su id
         for(int i=0; i < cantCiudades; i++){ //O(|C| + |T|)
             idCiudades[i] = new Ciudad(i);
@@ -104,16 +104,16 @@ public class BestEffort {
         int perdidaAux = perdidas[destino]; //O(1) 
         int gananciaAux = ganancias[origen]; //O(1)
 
-        gananciaPromedioPorTraslado += gananciaNeta;
+        gananciaTotalPorTraslado += gananciaNeta;
         //usare dos variables temporales para comparar
         
         if(perdidaAux > MayorPerdida){ //O(1)
             MayorPerdida = perdidaAux; //O(1)
-            ciudadesMayorPerdida.clear();
+            ciudadesMayorPerdida.clear(); //O(1)
             ciudadesMayorPerdida.add(destino); //O(1) amortizado
         }
         else if(perdidaAux == MayorPerdida){ //O(1)
-            MayorPerdida = gananciaNeta;
+            MayorPerdida = gananciaNeta; //O(1)
             ciudadesMayorPerdida.add(destino); //O(1) amortizado
         }
         
@@ -152,6 +152,11 @@ public class BestEffort {
     }
     
     public int gananciaPromedioPorTraslado(){ //O(1)
-        return (gananciaPromedioPorTraslado / totalTrasladosDespachados);
+        if (totalTrasladosDespachados == 0){
+            return 0;
+        }
+        else{
+        return (gananciaTotalPorTraslado / totalTrasladosDespachados);
+        }
     }
 }
