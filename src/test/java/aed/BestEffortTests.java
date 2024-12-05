@@ -2,6 +2,7 @@ package aed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -200,6 +201,7 @@ public class BestEffortTests {
     @Test
     void ciudades_traslados_vacios() {
         BestEffort sis = new BestEffort(this.cantCiudades, new Traslado[] {});
+        sis.despacharMasAntiguos(1);
         assertSetEquals(new ArrayList<>(), sis.ciudadesConMayorGanancia());
         assertSetEquals(new ArrayList<>(), sis.ciudadesConMayorPerdida());
     }
@@ -243,7 +245,7 @@ public class BestEffortTests {
         for (int i = 0; i < 1000; i++) {
             nuevos.add(new Traslado(i + 1, i % 7, (i + 1) % 7, i * 100, i));
         }
-        
+
         //que funcione con traslados muy grandes
         BestEffort sis = new BestEffort(this.cantCiudades, nuevos.toArray(new Traslado[nuevos.size()]));
 
