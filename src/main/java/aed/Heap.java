@@ -7,10 +7,11 @@ import java.util.ArrayList;
 public class Heap<C, H extends Comparador<C>>{
     ArrayList<C> array = new ArrayList<C>(); //puede contener traslados o ciudades
     H comparador; //Es alguna clase que tiene la interfaz Comparador para usar .comparar()
+    int[] handlesCiudades; //como los traslados tienen sus posiciones como atributos, este handle solo contendra de Ciudades, pero seria una solucion válida si no quisiese que sean atributos.
 
     public Heap(C[] array, H comparador){ //O(n)
         this.comparador = comparador; //O(1)
-        
+        handlesCiudades = new int[array.length]; //O(1)
 
         for (int i = 0; i < array.length; i++){ //O(n)
             //copia los elementos del array a un arrayList<C>
@@ -30,7 +31,7 @@ public class Heap<C, H extends Comparador<C>>{
             y que posee dentro de la sumatoria {h / 2^(h+1)}, que es la altura dividida por la cantidad maxima de nodos, haciendo que mientras mayor sea h, converge a 0, ya que h <= 2^h por ende daria:
         */
         for(int i = ultimoPadre; i >= 0; i--){ //O(n)
-            heapify(this.array.size(), i); 
+            siftDown(i); 
         }
     }
 
@@ -47,13 +48,16 @@ public class Heap<C, H extends Comparador<C>>{
         else if(comparador instanceof ComparatorGanancia){
             //es de tipo Ciudad[]
             ((Ciudad) array.get(nuevaPosicion)).posicion = nuevaPosicion; //O(1)
+            //actualizar handlesCiudades[]
+            handlesCiudades[((Ciudad) array.get(nuevaPosicion)).id] = nuevaPosicion;
         }
     }
     //tengo que saber de alguna manera si el array es de traslados o ciudades??
     //obtener el tipo de clase que es, y segun el caso, ejecutar ciertas operaciones o no (modularizar)
 
     //el mismo array, el tamaño del array y la posicion
-    private void heapify(int arrayTam, int i){ //O(log n)
+    private void siftDown(int i){ //O(log n)
+        int arrayTam = array.size();
         int padre = i; //O(1)
         int izq = 2*i+1; //posicion izq O(1)
         int der = 2*i+2; //posicion der O(1)
@@ -72,7 +76,7 @@ public class Heap<C, H extends Comparador<C>>{
         //Llamar recursivamente a heapify en la posicion del hijo mayor
         if(elMayorHijo != -1 && comparador.comparar(array.get(elMayorHijo), array.get(padre)) > 0){ //O(1)
             swap(padre, elMayorHijo); //O(1)
-            heapify(arrayTam, elMayorHijo); //O(log n) al seleccionar uno de los 2 hijos posibles
+            siftDown(elMayorHijo); //O(log n) al seleccionar uno de los 2 hijos posibles
         }
         
     }
@@ -85,7 +89,6 @@ public class Heap<C, H extends Comparador<C>>{
         actualizarHandle(padre); //O(1), ahora actualizo el handle del objeto que ahora este en el index padre
         array.set(elMayorHijo, c); //O(1)
         actualizarHandle(elMayorHijo); //O(1), ahora actualizo el handle del objeto que ahora este en el index elMayorHijo
-
     }
     
     public C desencolarMax(){ //O(log n)
@@ -98,7 +101,7 @@ public class Heap<C, H extends Comparador<C>>{
 
             array.set(0, ultimoElemento); //reemplaza por ultimo elemento, O(1)
             actualizarHandle(0);
-            heapify(array.size(), 0); //O(log n)
+            siftDown(0); //O(log n)
         }
         else{
             array.remove(0);
@@ -111,7 +114,6 @@ public class Heap<C, H extends Comparador<C>>{
         //colocar el objeto al final
         array.add(objeto); //O(1)
         actualizarHandle(array.size()-1);
-        int padre = (array.size()-2)/2;
 
         //hacer siftUp para ordenar
         siftUp(array.size()-1);; //O(log n) 
@@ -125,22 +127,19 @@ public class Heap<C, H extends Comparador<C>>{
             actualizarHandle(posicion); // Actualiza el handle del elemento movido, O(1)
     
             // Reestablecer la propiedad del heap
-            heapify(array.size(), posicion); // chequear el orden al modificar el valor de la posición.
+            siftDown(posicion); // chequear el orden al modificar el valor de la posición.
         }
     }
 
-    private void siftUp(int index) { //O(log n)
-        while (index > 0) { //O(log n)
-            int padre = (index - 1) / 2;
+    private void siftUp(int i) { //O(log n) //usado en encolar por ej.
+        while (i > 0) { //O(log n)
+            int padre = (i - 2) / 2;
     
             // Si el elemento actual no rompe la propiedad del heap, termina
-            if (comparador.comparar(array.get(index), array.get(padre)) <= 0) { //O(1)
-                break;
+            if (comparador.comparar(array.get(i), array.get(padre)) >= 0) { //O(1)
+                swap(i, padre); //O(1)
             }
-    
-            swap(index, padre); //O(1)
-    
-            index = padre;
+            i = padre;
         }
     }
 
@@ -148,6 +147,20 @@ public class Heap<C, H extends Comparador<C>>{
         return array.get(0);
     }
 
+    public void modValorCiudad(int posicion, int valor){ //O(log n)
+        //agarro el valor .superavit de un elemento de ciudad y luego hago siftdown si fue resta o siftup si fue suma
+        Ciudad ciudad = (Ciudad) array.get(posicion); //O(1)
+        ciudad.superavit += valor; //O(1)
+
+        //si valor == 0, no cambio ya que no estoy alterando nada
+        if(valor < 0){
+            siftDown(posicion); //O(log n)
+        }
+        else if(valor > 0){
+            siftUp(posicion); //O(log n)
+        }
+
+    }
 }
 
 

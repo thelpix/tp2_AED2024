@@ -11,6 +11,7 @@ public class BestEffort {
     private int gananciaPromedioPorTraslado;
     private int[] ganancias;
     private int[] perdidas;
+    private int[] handlesCiudades;
     private Heap<Traslado, ComparatorRedituabilidad> heapRedituabilidad;
     private Heap<Traslado, ComparatorAntiguedad> heapAntiguedad;
     private Heap<Ciudad, ComparatorGanancia> heapSuperavits;
@@ -64,9 +65,10 @@ public class BestEffort {
             
             //Parte de Ciudades, podria modularizarlo en otra funcion privada
             actualizarCiudades(traslado.destino, traslado.origen, traslado.gananciaNeta);
+            actualizarSuperavits(traslado.destino, traslado.origen, traslado.gananciaNeta);
             i++;
+            totalTrasladosDespachados++;
         }
-        totalTrasladosDespachados++;
             //como hay muchos O(1), en complejidad asintotica no se cuentan por constantes
             //complejidad final = O(n(log|T| + log|T|)) -> O(n(log|T|))
             //capaz cuando haga el superAvit o las gananciasPromedio ahi si me de log(|C|)
@@ -88,20 +90,18 @@ public class BestEffort {
                 //pasaria de O(|T|log(|T|)) -> O(log(|T|))
                 
                 //Parte de Ciudades
-                actualizarCiudades(traslado.destino, traslado.origen, traslado.gananciaNeta);
+                actualizarCiudades(traslado.destino, traslado.origen, traslado.gananciaNeta); //O(1)
+                actualizarSuperavits(traslado.destino, traslado.origen, traslado.gananciaNeta); //O(log |C|)
                 i++;
+                totalTrasladosDespachados++;
             }
-                //como hay muchos O(1), en complejidad asintotica no se cuentan por constantes
-                //complejidad final = O(n(log|T| + log|T|)) -> O(n(log|T|))
-                //capaz cuando haga el superAvit o las gananciasPromedio ahi si me de log(|C|)
-            totalTrasladosDespachados++;
             return res;    
     }
     
-    private void actualizarCiudades(int destino, int origen, int gananciaNeta){
+    private void actualizarCiudades(int destino, int origen, int gananciaNeta){ //O(1)
         perdidas[destino] += gananciaNeta; //O(1)
         ganancias[origen] += gananciaNeta; //O(1)
-        int perdidaAux = perdidas[destino]; //O(1) //siento que esta mal pero idk
+        int perdidaAux = perdidas[destino]; //O(1) 
         int gananciaAux = ganancias[origen]; //O(1)
 
         gananciaPromedioPorTraslado += gananciaNeta;
@@ -113,7 +113,7 @@ public class BestEffort {
             ciudadesMayorPerdida.add(destino); //O(1) amortizado
         }
         else if(perdidaAux == MayorPerdida){ //O(1)
-            MayorPerdida = gananciaNeta;//raro
+            MayorPerdida = gananciaNeta;
             ciudadesMayorPerdida.add(destino); //O(1) amortizado
         }
         
@@ -128,20 +128,30 @@ public class BestEffort {
         }
     }
 
-    public int ciudadConMayorSuperavit(){
-        //corregir ya que C no puedo poner simplemente "posicion"
-        return heapSuperavits.consultarMax().posicion;
+    private void actualizarSuperavits(int destino, int origen, int ganancia){ //O(log |C|)
+        //tiene que actualizar las variables superavits de las ciudades modificadas
+        //una vez actualizadas, debe ordenadarlas para respetar la propiedad del heap
+
+        //la posicion la obtendre a traves de un array fijo que contiene los handles por indice
+        heapSuperavits.modValorCiudad(heapSuperavits.handlesCiudades[destino], -ganancia); //O(log |C|) ya que solo hay cantCiudades de handles
+        heapSuperavits.modValorCiudad(heapSuperavits.handlesCiudades[origen], ganancia); //O(log |C|)
+
+    }
+
+    public int ciudadConMayorSuperavit(){ //O(1)
+        //para que esto funcione, tengo que actualizar los elementos del heap constantemenete
+        return heapSuperavits.consultarMax().id;
     }
     
-    public ArrayList<Integer> ciudadesConMayorGanancia(){
+    public ArrayList<Integer> ciudadesConMayorGanancia(){ //O(1)
         return ciudadesMayorGanancia;
     }
 
-    public ArrayList<Integer> ciudadesConMayorPerdida(){
+    public ArrayList<Integer> ciudadesConMayorPerdida(){ //O(1)
         return ciudadesMayorPerdida;
     }
     
-    public int gananciaPromedioPorTraslado(){
+    public int gananciaPromedioPorTraslado(){ //O(1)
         return (gananciaPromedioPorTraslado / totalTrasladosDespachados);
     }
 }
