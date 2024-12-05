@@ -1,7 +1,7 @@
 package aed;
 
 public class Ciudad{
-    int id;
+    Integer id;
     Integer posicion;
     Integer superavit = 0;
 
