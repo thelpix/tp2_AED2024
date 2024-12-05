@@ -14,7 +14,6 @@ public class BestEffort {
     private Heap<Traslado, ComparatorRedituabilidad> heapRedituabilidad;
     private Heap<Traslado, ComparatorAntiguedad> heapAntiguedad;
     private Heap<Ciudad, ComparatorGanancia> heapSuperavits;
-    //usar un array y arraylist para superavit?
     
     public BestEffort(int cantCiudades, Traslado[] traslados){
 
@@ -25,25 +24,23 @@ public class BestEffort {
         totalTrasladosDespachados = 0;
         gananciaTotalPorTraslado = 0;
         //inicializar las ganancias y perdidas en 0 y las ciudades con su id
-        for(int i=0; i < cantCiudades; i++){ //O(|C| + |T|)
+        for(int i=0; i < cantCiudades; i++){ //O(|C|)
             idCiudades[i] = new Ciudad(i);
             ganancias[i] = 0;
             perdidas[i] = 0;
         }
-        //esto seria O(|C| + |C|) = O(|C|)
         
         heapRedituabilidad = new Heap<>(traslados, new ComparatorRedituabilidad()); //O(|T|) Max-Heap
         heapAntiguedad = new Heap<>(traslados, new ComparatorAntiguedad()); //O(|T|), Min-Heap
-        heapSuperavits = new Heap<>(idCiudades, new ComparatorGanancia()); //O(|T|)
+        heapSuperavits = new Heap<>(idCiudades, new ComparatorGanancia()); //O(|C|)
         
-        //esto seria O(|T| + |T|) = O(|T|)
         //complejidad final: O(|C| + |T|)
     }
     
     public void registrarTraslados(Traslado[] traslados){
         int i = 0; //O(1)
         while(i < traslados.length){ //O(|traslados|)
-            heapRedituabilidad.encolar(traslados[i]); //O(log(|T|)), el constructor se encarga de asignarle posicion en c/u InfoTraslados
+            heapRedituabilidad.encolar(traslados[i]); //O(log(|T|))
             heapAntiguedad.encolar(traslados[i]); //O(log(|T|))
             i++; //O(1)
         }
@@ -53,25 +50,23 @@ public class BestEffort {
     public int[] despacharMasRedituables(int n){ //O(n(log|T|) + log(|C|)))
         int i = 0; //O(1)
         int[] res = new int[n];
+        //Desencolar n veces
         while(i < n && heapRedituabilidad.array.size() > 0){ //O(n)
-            //Desencolar n veces
-            //porque el el heap tiene tamaño 6 y no antes del desencolar???
             Traslado traslado = heapRedituabilidad.desencolarMax(); //O(log(|T|))
             res[i] = traslado.id;
             
-            heapAntiguedad.borrarPos(heapAntiguedad.handles.get(traslado.id -1)); //O(log n)
             //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que buscar
             //pasaria de O(|T|log(|T|)) -> O(log(|T|))
+            heapAntiguedad.borrarPos(heapAntiguedad.handles.get(traslado.id -1)); //O(log n)
             
-            //Parte de Ciudades, podria modularizarlo en otra funcion privada
+            //Parte de Ciudades, lo modularizo en 2 funciones privadas
             actualizarCiudades(traslado.destino, traslado.origen, traslado.gananciaNeta);
             actualizarSuperavits(traslado.destino, traslado.origen, traslado.gananciaNeta);
+
             i++;
             totalTrasladosDespachados++;
         }
-            //como hay muchos O(1), en complejidad asintotica no se cuentan por constantes
-            //complejidad final = O(n(log|T| + log|T|)) -> O(n(log|T|))
-            //capaz cuando haga el superAvit o las gananciasPromedio ahi si me de log(|C|)
+            //como hay O(1), en complejidad asintotica no se cuentan por constantes
         return res;
     }
     
@@ -83,7 +78,7 @@ public class BestEffort {
             while(i < n && heapAntiguedad.array.size() > 0){ //O(n)
                 //Desencolar n veces
                 Traslado traslado = heapAntiguedad.desencolarMax(); //O(log(|T|))
-                res[i] = traslado.id; //cuidado con el aliasing upsi
+                res[i] = traslado.id; //O(1)
                 
                 heapRedituabilidad.borrarPos(heapRedituabilidad.handles.get(traslado.id -1));
                 //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que encontrar
@@ -140,7 +135,7 @@ public class BestEffort {
 
     public int ciudadConMayorSuperavit(){ //O(1)
         //para que esto funcione, tengo que actualizar los elementos del heap constantemenete
-        return heapSuperavits.consultarMax().id;
+        return heapSuperavits.consultarMax().id; //O(1)
     }
     
     public ArrayList<Integer> ciudadesConMayorGanancia(){ //O(1)
@@ -152,7 +147,6 @@ public class BestEffort {
     }
     
     public int gananciaPromedioPorTraslado(){ //O(1)
-        //para evitar un caso indeterminado
         return (gananciaTotalPorTraslado / totalTrasladosDespachados);
     }
 }

@@ -3,7 +3,7 @@ package aed;
 import java.util.ArrayList;
 
 
-//podria tener los 3 comparadores posibles, y en public heap, el 2do parametro me diria cual comparador usar.
+//Un Heap generico, donde <C,H>, C son las posibles clases que puede almacenar y H es un comparador para C
 public class Heap<C, H extends Comparador<C>>{
     ArrayList<C> array = new ArrayList<C>(); //puede contener traslados o ciudades
     H comparador; //Es alguna clase que tiene la interfaz Comparador para usar .comparar()
@@ -30,13 +30,15 @@ public class Heap<C, H extends Comparador<C>>{
         int ultimoPadre = (this.array.size()-2)/2; //O(1)
 
         /*hacer reversa (siftDown): desde el ultimo padre hasta la raiz
-        Como estoy haciendo desde un approach bottom-up, la altura del subarbol (h) del heapify va incrementando por cada heapify,
-            incrementando el tiempo de ejecucion.
-        Esto es porque empieza una sumatoria que origina en una altura h = 0 (o sea que el padre del heapify es la ultimo hoja) hasta h aproximandose a log n (que el padre del heapify sea la raiz),
-            y que posee dentro de la sumatoria {h / 2^(h+1)}, que es la altura dividida por la cantidad maxima de nodos, haciendo que mientras mayor sea h, converge a 0, ya que h <= 2^h por ende daria:
+        Como funciona desde un approach bottom-up, la altura (h) del subarbol va incrementando por cada iteracion del for(),
+            incrementando el tiempo de ejecucion, quiero decir, que mientras más grande es el indice donde estes en el array, menos va a tardar
+        Si un heap lo represento en un array, el ultimo padre aproximadamente podria estar una mitad del array, y entonces,
+            si hago siftDown estoy ordenando ya desde la mitad hasta el inicio del array
+        
         */
+        //recorremos los nodos desde el ultimo padre hasta la raiz
         for(int i = ultimoPadre; i >= 0; i--){ //O(n)
-            siftDown(i); 
+            siftDown(i); //O(log n)
         }
     }
 

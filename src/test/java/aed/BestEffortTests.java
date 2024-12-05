@@ -238,7 +238,7 @@ public class BestEffortTests {
     }
 
     @Test
-    void large_number_of_traslados() {
+    void muchos_traslados() {
         ArrayList<Traslado> nuevos = new ArrayList<>();
         for (int i = 0; i < 1000; i++) {
             nuevos.add(new Traslado(i + 1, i % 7, (i + 1) % 7, i * 100, i));
@@ -371,5 +371,81 @@ public class BestEffortTests {
         sis.despacharMasAntiguos(4);
         assertSetEquals(new ArrayList<>(Arrays.asList(0)), sis.ciudadesConMayorGanancia());
         assertSetEquals(new ArrayList<>(Arrays.asList(1)), sis.ciudadesConMayorPerdida());
+    }
+
+    @Test
+    void construccionHeap() {
+        Traslado[] traslados = new Traslado[] {
+            new Traslado(3, 0, 1, 100, 70),
+            new Traslado(2, 0, 1, 200, 40),
+            new Traslado(1, 0, 1, 300, 30),
+            new Traslado(4, 0, 1, 400, 10),
+            new Traslado(5, 0, 1, 500, 20)
+        };
+
+        // heapRedituabilidad
+        Heap<Traslado, ComparatorRedituabilidad> heap = new Heap<>(traslados, new ComparatorRedituabilidad());
+
+        // Que el maximo este en la raiz
+        assertEquals(traslados[4], heap.consultarMax());
+    }
+
+    @Test
+    void encolarYDesencolarMax() {
+        Traslado[] traslados = new Traslado[] {
+            new Traslado(1, 0, 1, 100, 50),
+            new Traslado(2, 0, 1, 200, 40)
+        };
+
+        //HeapAntiguedad
+        Heap<Traslado, ComparatorAntiguedad> heap = new Heap<>(traslados, new ComparatorAntiguedad());
+
+        Traslado nuevo = new Traslado(3, 0, 1, 300, 60);
+        heap.encolar(nuevo);
+
+        // Verificar que el nuevo elemento este ordenado
+        assertEquals(nuevo, heap.array.get(2));
+
+        // Desencolar el máximo y chequear el nuevo
+        assertEquals(traslados[1], heap.desencolarMax());
+        assertEquals(traslados[0], heap.consultarMax());
+    }
+
+    @Test
+    void siftDownEnBorrarPos() {
+        Traslado[] traslados = new Traslado[] {
+            new Traslado(1, 0, 1, 100, 40),
+            new Traslado(2, 0, 1, 200, 50),
+            new Traslado(3, 0, 1, 300, 30)
+        };
+
+        //heapRedituabilidad
+        Heap<Traslado, ComparatorRedituabilidad> heapR = new Heap<>(traslados, new ComparatorRedituabilidad());
+        //heapAntiguedad
+        Heap<Traslado, ComparatorAntiguedad> heapA = new Heap<>(traslados, new ComparatorAntiguedad());
+
+        heapA.borrarPos(heapR.handles.get(heapR.consultarMax().id-1)); //Borrar en donde estaria la raiz de HeapRedituabilidad
+        heapR.borrarPos(0); // Borrar la raíz
+
+        // Verificar que la nueva raíz sea el elemento correcto
+        assertEquals(traslados[1], heapR.consultarMax());
+        //chequear que en el heapAntiguedad tambien haya sido cambiado.
+        assertEquals(traslados[0], heapA.consultarMax());
+    }
+
+    @Test
+    void handles() {
+        Traslado[] traslados = new Traslado[] {
+            new Traslado(1, 0, 1, 300, 50),
+            new Traslado(2, 0, 1, 200, 40),
+            new Traslado(3, 0, 1, 100, 30)
+        };
+
+        Heap<Traslado, ComparatorRedituabilidad> heap = new Heap<>(traslados, new ComparatorRedituabilidad());
+        
+        // Verificar que los handles están correctamente inicializados
+        for (int i = 0; i < traslados.length; i++) {
+            assertEquals(i, heap.handles.get(traslados[i].id - 1));
+        }
     }
 }
