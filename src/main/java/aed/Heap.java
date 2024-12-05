@@ -32,9 +32,8 @@ public class Heap<C, H extends Comparador<C>>{
         /*hacer reversa (siftDown): desde el ultimo padre hasta la raiz
         Como funciona desde un approach bottom-up, la altura (h) del subarbol va incrementando por cada iteracion del for(),
             incrementando el tiempo de ejecucion, quiero decir, que mientras más grande es el indice donde estes en el array, menos va a tardar
-        Si un heap lo represento en un array, el ultimo padre aproximadamente podria estar una mitad del array, y entonces,
-            si hago siftDown estoy ordenando ya desde la mitad hasta el inicio del array
-        
+        Si un heap lo represento en un array, el ultimo padre aproximadamente podria estar en la mitad del array, y entonces,
+            si hago siftDown estoy ordenando ya desde la mitad hasta el inicio del array, haciendo que tarde O(n) en vez de O(n log n)
         */
         //recorremos los nodos desde el ultimo padre hasta la raiz
         for(int i = ultimoPadre; i >= 0; i--){ //O(n)
@@ -45,21 +44,16 @@ public class Heap<C, H extends Comparador<C>>{
 
     //asigna handle segun si es Traslado o Ciudad el objeto
     private void actualizarHandle(int nuevaPosicion){  //O(1)
-        //pregunta segun cual comparador usar para obtener su posicion
+        //pregunta segun cual comparador usar para setear su posicion
         if(comparador instanceof ComparatorAntiguedad || comparador instanceof ComparatorRedituabilidad){ //O(1)
             handles.set(((Traslado) array.get(nuevaPosicion)).id -1, Integer.valueOf(nuevaPosicion));
         }
         else if(comparador instanceof ComparatorGanancia){
-            //es de tipo Ciudad[]
-            ((Ciudad) array.get(nuevaPosicion)).posicion = nuevaPosicion; //O(1)
             //actualizar handlesCiudades[]
             handles.set(((Ciudad) array.get(nuevaPosicion)).id, Integer.valueOf(nuevaPosicion)); //O(1)
         }
     }
-    //tengo que saber de alguna manera si el array es de traslados o ciudades??
-    //obtener el tipo de clase que es, y segun el caso, ejecutar ciertas operaciones o no (modularizar)
 
-    //el mismo array, el tamaño del array y la posicion
     private void siftDown(int i){ //O(log n)
         int arrayTam = array.size();
         int padre = i; //O(1)
@@ -76,8 +70,9 @@ public class Heap<C, H extends Comparador<C>>{
         }
 
 
-        //Swap si el hijo es mayor al padre
-        //Llamar recursivamente a heapify en la posicion del hijo mayor
+        //Swap si un hijo es mayor al padre
+        //Llamar recursivamente en la posicion del hijo mayor
+        //si no hay mas hijos entonces no sigue mas
         if(elMayorHijo != -1 && comparador.comparar(array.get(elMayorHijo), array.get(padre)) > 0){ //O(1)
             swap(padre, elMayorHijo); //O(1)
             siftDown(elMayorHijo); //O(log n) al seleccionar uno de los 2 hijos posibles
@@ -98,49 +93,51 @@ public class Heap<C, H extends Comparador<C>>{
     public C desencolarMax(){ //O(log n)
         //se reemplaza el ultimo elemento si hay mas de 2 nodos
         C res;
-        res = array.get(0); //O(1
+        res = array.get(0); //O(1)
         if (array.size() > 1){
             C ultimoElemento = array.remove(array.size()-1); //O(1)
 
             array.set(0, ultimoElemento); //reemplaza por ultimo elemento, O(1)
-            actualizarHandle(0);
+            actualizarHandle(0); //O(1)
             siftDown(0); //O(log n)
         }
         else{
-            array.remove(0);
+            array.remove(0); //O(1)
         }
 
         return res;
     }
 
     public void encolar(C objeto){ //O(log n)
-        //colocar el objeto al final
+        //colocar el objeto al final e insertar su handle
         array.add(objeto); //O(1)
-        handles.add(array.size());
+        handles.add(array.size()); //O(1) amortizado
         actualizarHandle(array.size()-1);
 
-        //hacer siftUp para ordenar
+        //hacer siftUp para ordenar, al ser el ultimo elemento, solo puede subir
         siftUp(array.size()-1);; //O(log n) 
     }
 
     public void borrarPos(int posicion){ //O(log n)
-        int ultimoIndex = array.size() - 1;
-        if (posicion == ultimoIndex) {
-            array.remove(ultimoIndex);
-        } else {
-            C ultimo = array.remove(ultimoIndex);
-            array.set(posicion, ultimo);
-            actualizarHandle(posicion);
-            siftDown(posicion);
-            siftUp(posicion);
+        int ultimo = array.size() - 1;
+        if (posicion == ultimo) {
+            array.remove(ultimo); //O(1)
+        } 
+        else {
+            C ultimoElemento = array.remove(ultimo); //O(1)
+            array.set(posicion, ultimoElemento); //O(1)
+            actualizarHandle(posicion); //O(1)
+            //el ultimo elemento podria ser tanto mayor o menor a sus hijos o padre, asi que uso ambos sift
+            siftDown(posicion); //O(log n)
+            siftUp(posicion); //O(log n)
         }
     }
 
-    private void siftUp(int i) { //O(log n) //usado en encolar por ej.
+    private void siftUp(int i) { //O(log n)
         while (i > 0) { //O(log n)
             int padre = (i - 1) / 2; //O(1)
     
-            // Si el elemento actual no rompe la propiedad del heap, termina
+            // Si el elemento actual es mas grande que el padre, swapea
             if (comparador.comparar(array.get(i), array.get(padre)) >= 0) { //O(1)
                 swap(i, padre); //O(1)
             }
@@ -149,7 +146,7 @@ public class Heap<C, H extends Comparador<C>>{
     }
 
     public C consultarMax(){ //O(1)
-        return array.isEmpty() ? null : array.get(0);
+        return array.get(0); //O(1)
     }
 
     public void modValorCiudad(int posicion, int valor){ //O(log n)
