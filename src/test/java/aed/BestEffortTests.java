@@ -198,10 +198,12 @@ public class BestEffortTests {
 
     }
 
+    //Tests de BestEffort
     @Test
     void ciudades_traslados_vacios() {
         BestEffort sis = new BestEffort(this.cantCiudades, new Traslado[] {});
         sis.despacharMasAntiguos(1);
+        //tiene que dar vacio
         assertSetEquals(new ArrayList<>(), sis.ciudadesConMayorGanancia());
         assertSetEquals(new ArrayList<>(), sis.ciudadesConMayorPerdida());
     }
@@ -373,6 +375,8 @@ public class BestEffortTests {
         assertSetEquals(new ArrayList<>(Arrays.asList(0)), sis.ciudadesConMayorGanancia());
         assertSetEquals(new ArrayList<>(Arrays.asList(1)), sis.ciudadesConMayorPerdida());
     }
+
+    //Tests de la clase Heap
 
     @Test
     void construccionHeap() {
