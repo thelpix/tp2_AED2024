@@ -226,7 +226,7 @@ public class BestEffortTests {
     sis.despacharMasAntiguos(2);
     assertSetEquals(new ArrayList<>(Arrays.asList(2, 3, 0, 1)), sis.ciudadesConMayorGanancia());
     assertSetEquals(new ArrayList<>(Arrays.asList(3, 2, 0, 1)), sis.ciudadesConMayorPerdida());
-
+    //como tienen mismo superavit, pues va el que menor identificador tenga
     assertEquals(0, sis.ciudadConMayorSuperavit());
     }
 
