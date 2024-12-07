@@ -26,7 +26,7 @@ public class Heap<C, H extends Comparador<C>>{
             actualizarHandle(i); //O(1)
     
         }
-
+        
         int ultimoPadre = (this.array.size()-2)/2; //O(1)
 
         /*hacer reversa (siftDown): desde el ultimo padre hasta la raiz
@@ -46,7 +46,7 @@ public class Heap<C, H extends Comparador<C>>{
     private void actualizarHandle(int nuevaPosicion){  //O(1)
         //pregunta segun cual comparador usar para setear su posicion
         if(comparador instanceof ComparatorAntiguedad || comparador instanceof ComparatorRedituabilidad){ //O(1)
-            handles.set(((Traslado) array.get(nuevaPosicion)).id -1, Integer.valueOf(nuevaPosicion));
+            handles.set(((Traslado) array.get(nuevaPosicion)).id -1, Integer.valueOf(nuevaPosicion)); //O(1)
         }
         else if(comparador instanceof ComparatorGanancia){
             //actualizar handlesCiudades[]
