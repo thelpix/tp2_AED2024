@@ -15,7 +15,7 @@ public class BestEffort {
     private Heap<Traslado, ComparatorAntiguedad> heapAntiguedad;
     private Heap<Ciudad, ComparatorGanancia> heapSuperavits;
     
-    //esperamos que le guste :)
+    //esperemos que le guste :) saludos
     
     public BestEffort(int cantCiudades, Traslado[] traslados){
 
