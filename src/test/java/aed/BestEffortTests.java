@@ -2,7 +2,6 @@ package aed;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -255,7 +254,7 @@ public class BestEffortTests {
         assertTrue(sis.gananciaPromedioPorTraslado() > 0);
     }
 
-    //chequea que despues de ordenar 1000 heaps si se mantiene la propiedad del orden en el heap
+    //chequea que despues de ordenar 1000 heaps si se mantiene la propiedad del orden en el heap de hijos menores al padre
     @Test
     void muchos_traslados_heap_propiedad(){
         Traslado[] nuevos = new Traslado[1000];

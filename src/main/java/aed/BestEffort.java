@@ -83,7 +83,7 @@ public class BestEffort {
                 res[i] = traslado.id; //O(1)
                 
                 heapRedituabilidad.borrarPos(heapRedituabilidad.handles.get(traslado.id -1));
-                //al borrar un traslado, debo modificar heapAntiguedad, pero como se la posicion a borrar, no la tengo que encontrar
+                //al borrar un traslado, debo modificar heapRedituabilidad, pero como se la posicion a borrar, no la tengo que encontrar
                 //pasaria de O(|T|log(|T|)) -> O(log(|T|))
                 
                 //Parte de Ciudades
@@ -98,11 +98,12 @@ public class BestEffort {
     private void actualizarCiudades(int destino, int origen, int gananciaNeta){ //O(1)
         perdidas[destino] += gananciaNeta; //O(1)
         ganancias[origen] += gananciaNeta; //O(1)
+
+        //usare dos variables temporales para comparar las ciudades
         int perdidaAux = perdidas[destino]; //O(1) 
         int gananciaAux = ganancias[origen]; //O(1)
 
         gananciaTotalPorTraslado += gananciaNeta;
-        //usare dos variables temporales para comparar
         
         if(perdidaAux > MayorPerdida){ //O(1)
             MayorPerdida = perdidaAux; //O(1)
