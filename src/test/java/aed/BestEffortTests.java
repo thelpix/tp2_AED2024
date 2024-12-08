@@ -251,8 +251,31 @@ public class BestEffortTests {
         //que funcione con traslados muy grandes
         BestEffort sis = new BestEffort(this.cantCiudades, nuevos.toArray(new Traslado[nuevos.size()]));
 
-        sis.despacharMasRedituables(500);
+        sis.despacharMasRedituables(1000);
         assertTrue(sis.gananciaPromedioPorTraslado() > 0);
+    }
+
+    //chequea que despues de ordenar 1000 heaps si se mantiene la propiedad del orden en el heap
+    @Test
+    void muchos_traslados_heap_propiedad(){
+        Traslado[] nuevos = new Traslado[1000];
+        for (int i = 0; i < 1000; i++) {
+            nuevos[i] = (new Traslado(i + 1, i % 7, (i + 1) % 7, i * 100, i));
+        }
+        ComparatorRedituabilidad Comparator = new ComparatorRedituabilidad();
+
+        //heap con mil traslados
+        Heap<Traslado, ComparatorRedituabilidad> heap = new Heap<>(nuevos, Comparator);
+
+        //desde el ultimo hijo hasta la raiz
+        int i = heap.array.size()-1;
+        while (i > 0) {
+            int padre = (i - 1) / 2;
+
+            // Assert true chequea que el hijo sea menor o igual al padre
+            assertTrue(Comparator.comparar(heap.array.get(i), heap.array.get(padre)) <= 0);
+            i = padre;
+        }
     }
 
     @Test

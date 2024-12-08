@@ -120,16 +120,29 @@ public class Heap<C, H extends Comparador<C>>{
 
     public void borrarPos(int posicion){ //O(log n)
         int ultimo = array.size() - 1;
+
         if (posicion == ultimo) {
+            //si es el ultimo, borrar sin problema
             array.remove(ultimo); //O(1)
         } 
         else {
-            C ultimoElemento = array.remove(ultimo); //O(1)
+            //si no es el ultimo, lo reemplazo con el ultimo elemento y ordeno
+            C ultimoElemento = array.get(ultimo); //O(1)
             array.set(posicion, ultimoElemento); //O(1)
+            array.remove(ultimo); //O(1)
             actualizarHandle(posicion); //O(1)
-            //el ultimo elemento podria ser tanto mayor o menor a sus hijos o padre, asi que uso ambos sift
-            siftDown(posicion); //O(log n)
-            siftUp(posicion); //O(log n)
+
+            //el ultimo elemento podria ser tanto mayor o menor a su actual padre, asi que pregunto cual sift usar
+            int padre = (posicion - 1) / 2;
+
+            if(comparador.comparar(array.get(posicion), array.get(padre)) > 0){ //O(1)
+                //que el elemento ahora sea mayor al padre
+                siftUp(posicion); //O(log n)
+            }
+            else{
+                //el elemento es ahora menor o igual al padre
+                siftDown(posicion); //O(log n)
+            }
         }
     }
 
