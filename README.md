@@ -1,2 +1,2 @@
 # tp2 AED2024
-Trabajo Práctico sobre diseñar e implementar Heap con comparadores para posibles múltiples clases para la materia Algortimos y Estructuras de Datos, UBA FCEN 2024 2C
+Trabajo Práctico sobre resolver un problema diseñando e implementando un Heap con comparadores para múltiples clases para la materia Algoritmos y Estructuras de Datos, UBA FCEN 2024 2C
